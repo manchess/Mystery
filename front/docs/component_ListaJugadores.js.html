@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: component/ListaJugadores.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: component/ListaJugadores.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCrown, faTimes } from "@fortawesome/free-solid-svg-icons";
+import React from "react";
+import { obtNombrejugador } from "../services";
+
+/**
+ * Lista los jugadores que se unieron a una partida. Llamada en Lobby.js .
+ * @param {Jugadores | Turno } props
+ * @returns Renderizado JSX
+ */
+export default function ListaJugadores(props) {
+    return (
+        &lt;table className="tablaJugadores">
+            &lt;tbody>
+                {props.jugadores.map((e, index) => (
+                    &lt;tr key={index}>
+                        &lt;td
+                            style={{
+                                border:
+                                    props.turno === e.orden
+                                        ? "5px solid red"
+                                        : "",
+                            }}
+                        >
+                            &lt;span style={{ color: e.color }}>●&lt;/span>{" "}
+                            &lt;span
+                                style={{
+                                    fontWeight:
+                                        e.nombre === obtNombrejugador()
+                                            ? "bold"
+                                            : "",
+                                }}
+                            >
+                                {e.nombre}
+                            &lt;/span>{" "}
+                            {e.nombre === props.anfitrion ? (
+                                &lt;FontAwesomeIcon icon={faCrown} />
+                            ) : null}
+                            {e.perdio ? (
+                                &lt;>
+                                    {" "}
+                                    &lt;FontAwesomeIcon icon={faTimes} />
+                                &lt;/>
+                            ) : null}
+                        &lt;/td>
+                    &lt;/tr>
+                ))}
+                {[...Array(6 - props.jugadores.length)].map((e, key) => (
+                    &lt;tr key={key}>
+                        &lt;td style={{ color: "gray" }}>
+                            &lt;i>Vacío&lt;/i>
+                        &lt;/td>
+                    &lt;/tr>
+                ))}
+            &lt;/tbody>
+        &lt;/table>
+    );
+}
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#asigNombrejugador">asigNombrejugador</a></li><li><a href="global.html#BotonAct">BotonAct</a></li><li><a href="global.html#BotonCrear">BotonCrear</a></li><li><a href="global.html#buscarJugadores">buscarJugadores</a></li><li><a href="global.html#buscarJugadoresRecinto">buscarJugadoresRecinto</a></li><li><a href="global.html#entrarRecinto">entrarRecinto</a></li><li><a href="global.html#enviarMensaje">enviarMensaje</a></li><li><a href="global.html#esCasillero">esCasillero</a></li><li><a href="global.html#esPosicionPosible">esPosicionPosible</a></li><li><a href="global.html#estaEnUnaEntrada">estaEnUnaEntrada</a></li><li><a href="global.html#getTama%25C3%25B1oFicha">getTamañoFicha</a></li><li><a href="global.html#hacerAcusacion">hacerAcusacion</a></li><li><a href="global.html#hacerSospecha">hacerSospecha</a></li><li><a href="global.html#iniciarPartida">iniciarPartida</a></li><li><a href="global.html#miColor">miColor</a></li><li><a href="global.html#moverFicha">moverFicha</a></li><li><a href="global.html#nuevaPartida">nuevaPartida</a></li><li><a href="global.html#nuevoJugador">nuevoJugador</a></li><li><a href="global.html#obtCasilleroEspecial">obtCasilleroEspecial</a></li><li><a href="global.html#obtDado">obtDado</a></li><li><a href="global.html#obtenerSumario">obtenerSumario</a></li><li><a href="global.html#obtNombrejugador">obtNombrejugador</a></li><li><a href="global.html#pasarTurno">pasarTurno</a></li><li><a href="global.html#responderSospecha">responderSospecha</a></li><li><a href="global.html#traerPartidas">traerPartidas</a></li><li><a href="global.html#unirJugador">unirJugador</a></li><li><a href="global.html#usarBrujaSalem">usarBrujaSalem</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.7</a> on Sun Nov 21 2021 18:18:38 GMT-0300 (hora estándar de Argentina)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

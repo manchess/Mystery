@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: component/CrearPartida.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: component/CrearPartida.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import React, { useState } from "react";
+import { useHistory } from "react-router";
+import { nuevaPartida, obtNombrejugador } from "../services";
+import SelectorColores from "./SelectorColores";
+
+const colores = [
+    "#4285F4",
+    "#DB4437",
+    "#F4B400",
+    "#0F9D58",
+    "#AB47BC",
+    "#26C6DA",
+];
+
+/**
+ * Permite al jugador crear nueva partida.
+ * @returns Renderizado JSX
+ */
+export default function CreaPartida() {
+    /**
+     * Ayuda a redireccionar al jugador a la partida creada.
+     */
+    const history = useHistory();
+    /**
+     * Guarda el nombre del jugador creador de la partida.
+     */
+    const jugador = obtNombrejugador();
+    /**
+     * Guardamos el nombre de la nueva partida
+     * @param  {""} Cadena de caracteres
+     * @param  {object} Nombre de la partida
+     */
+    const [nombre, setNombre] = useState(null);
+    /**
+     * Se guarda el color elegido
+     */
+    const [color, setColor] = useState(colores[0]);
+    /**
+     * Se guarda la contraseña.
+     */
+    const [password, setPassword] = useState("");
+
+    /**
+     * Envía la partida al back
+     * @param {Evento} evento Evento del click
+     */
+    const enviarPartida = (e) => {
+        e.preventDefault();
+        nuevaPartida({
+            nombre: nombre,
+            anfitrion: jugador,
+            color: color,
+            password: password,
+        })
+            .then((res) => {
+                if (res.status === 200) {
+                    history.push({
+                        pathname: `/partidas/${res.data.id_partida}`,
+                        state: {
+                            ...res.data,
+                            nombre: nombre,
+                            password: password,
+                        },
+                    });
+                }
+            })
+            .catch((err) => {
+                alert("Ocurrió un error. Revise la consola.");
+                console.error(err);
+            });
+    };
+
+    return (
+        &lt;div
+            style={{
+                width: "750px",
+                margin: "auto",
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                flexDirection: "column",
+                rowGap: "15px",
+                border: "1px solid rgb(100, 100, 100)",
+                padding: "15px",
+            }}
+        >
+            &lt;h1>CREAR PARTIDA&lt;/h1>
+            &lt;form
+                onSubmit={enviarPartida}
+                style={{
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    flexDirection: "column",
+                    rowGap: "15px",
+                }}
+            >
+                &lt;input
+                    required
+                    autoFocus
+                    placeholder="Escribe un nombre..."
+                    maxLength="20"
+                    minLength="4"
+                    onChange={(e) => setNombre(e.target.value)}
+                    style={{ width: "500px" }}
+                />
+                &lt;input
+                    placeholder="Contraseña"
+                    type="password"
+                    maxLength="30"
+                    minLength="3"
+                    onChange={(e) => setPassword(e.target.value)}
+                    style={{ width: "500px" }}
+                />
+                &lt;SelectorColores
+                    colores={colores}
+                    setColor={setColor}
+                    color={color}
+                />
+                &lt;button
+                    className="btn btn-dark"
+                    type="submit"
+                    disabled={!(nombre &amp;&amp; color)}
+                >
+                    Crear partida
+                &lt;/button>
+            &lt;/form>
+        &lt;/div>
+    );
+}
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#asigNombrejugador">asigNombrejugador</a></li><li><a href="global.html#BotonAct">BotonAct</a></li><li><a href="global.html#BotonCrear">BotonCrear</a></li><li><a href="global.html#buscarJugadores">buscarJugadores</a></li><li><a href="global.html#buscarJugadoresRecinto">buscarJugadoresRecinto</a></li><li><a href="global.html#entrarRecinto">entrarRecinto</a></li><li><a href="global.html#enviarMensaje">enviarMensaje</a></li><li><a href="global.html#esCasillero">esCasillero</a></li><li><a href="global.html#esPosicionPosible">esPosicionPosible</a></li><li><a href="global.html#estaEnUnaEntrada">estaEnUnaEntrada</a></li><li><a href="global.html#getTama%25C3%25B1oFicha">getTamañoFicha</a></li><li><a href="global.html#hacerAcusacion">hacerAcusacion</a></li><li><a href="global.html#hacerSospecha">hacerSospecha</a></li><li><a href="global.html#iniciarPartida">iniciarPartida</a></li><li><a href="global.html#miColor">miColor</a></li><li><a href="global.html#moverFicha">moverFicha</a></li><li><a href="global.html#nuevaPartida">nuevaPartida</a></li><li><a href="global.html#nuevoJugador">nuevoJugador</a></li><li><a href="global.html#obtCasilleroEspecial">obtCasilleroEspecial</a></li><li><a href="global.html#obtDado">obtDado</a></li><li><a href="global.html#obtenerSumario">obtenerSumario</a></li><li><a href="global.html#obtNombrejugador">obtNombrejugador</a></li><li><a href="global.html#pasarTurno">pasarTurno</a></li><li><a href="global.html#responderSospecha">responderSospecha</a></li><li><a href="global.html#traerPartidas">traerPartidas</a></li><li><a href="global.html#unirJugador">unirJugador</a></li><li><a href="global.html#usarBrujaSalem">usarBrujaSalem</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.7</a> on Sun Nov 21 2021 18:18:38 GMT-0300 (hora estándar de Argentina)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

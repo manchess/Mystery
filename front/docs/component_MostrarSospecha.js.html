@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: component/MostrarSospecha.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: component/MostrarSospecha.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import { useState } from "react";
+import BotonResponderSospecha from "./BotonResponderSospecha";
+
+/**
+ * Renderiza las cartas de una sospecha
+ * @param  {object} props Nombre de jugador y cartas de sospecha
+ */
+export default function MostrarSospecha(props) {
+    /**
+     * Estado que guarda la carta de la respues de una sospecha.
+     * @param  {object} null
+     */
+    const [respuesta, setRespuesta] = useState(null);
+
+    return (
+        &lt;div className="popup">
+            &lt;h1>{props.sospecha.nombre} sospechó&lt;/h1>
+            &lt;div
+                style={{
+                    display: "flex",
+                    columnGap: "15px",
+                }}
+            >
+                {props.sospecha.cartas.map((e, key) => (
+                    &lt;img
+                        src={`/cartas/${e}.png`}
+                        height="200px"
+                        key={key}
+                        alt={e}
+                    />
+                ))}
+            &lt;/div>
+            &lt;h1>{props.sospecha.nombreResponde} responde&lt;/h1>
+            {props.respuestaSospecha ? (
+                props.respuestaSospecha.carta !== "NINGUNA" ? (
+                    &lt;img
+                        src={`/cartas/${props.respuestaSospecha.carta}.png`}
+                        height="200px"
+                        a
+                        alt={props.respuestaSospecha.carta}
+                    />
+                ) : null
+            ) : null}
+            {props.respondiendoSospecha ? (
+                &lt;>
+                    &lt;h1>Elige una carta para responder:&lt;/h1>
+                    &lt;div
+                        style={{
+                            display: "flex",
+                            columnGap: "15px",
+                            marginTop: "10px",
+                        }}
+                    >
+                        {props.respondiendoSospecha.cartas.map((e, key) => (
+                            &lt;img
+                                src={`/cartas/${e}.png`}
+                                height="200px"
+                                onClick={() => setRespuesta(e)}
+                                style={{
+                                    cursor: "pointer",
+                                    opacity: e === respuesta ? "100%" : "50%",
+                                }}
+                                alt={e}
+                                key={key}
+                            />
+                        ))}
+                    &lt;/div>
+                    {respuesta ? (
+                        &lt;BotonResponderSospecha
+                            id_sospechante={props.sospecha.id_jugador}
+                            id_responde={props.respondiendoSospecha.id_responde}
+                            carta={respuesta}
+                            setRespondiendoSospecha={
+                                props.setRespondiendoSospecha
+                            }
+                        />
+                    ) : null}
+                &lt;/>
+            ) : null}
+        &lt;/div>
+    );
+}
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#asigNombrejugador">asigNombrejugador</a></li><li><a href="global.html#BotonAct">BotonAct</a></li><li><a href="global.html#BotonCrear">BotonCrear</a></li><li><a href="global.html#buscarJugadores">buscarJugadores</a></li><li><a href="global.html#buscarJugadoresRecinto">buscarJugadoresRecinto</a></li><li><a href="global.html#entrarRecinto">entrarRecinto</a></li><li><a href="global.html#enviarMensaje">enviarMensaje</a></li><li><a href="global.html#esCasillero">esCasillero</a></li><li><a href="global.html#esPosicionPosible">esPosicionPosible</a></li><li><a href="global.html#estaEnUnaEntrada">estaEnUnaEntrada</a></li><li><a href="global.html#getTama%25C3%25B1oFicha">getTamañoFicha</a></li><li><a href="global.html#hacerAcusacion">hacerAcusacion</a></li><li><a href="global.html#hacerSospecha">hacerSospecha</a></li><li><a href="global.html#iniciarPartida">iniciarPartida</a></li><li><a href="global.html#miColor">miColor</a></li><li><a href="global.html#moverFicha">moverFicha</a></li><li><a href="global.html#nuevaPartida">nuevaPartida</a></li><li><a href="global.html#nuevoJugador">nuevoJugador</a></li><li><a href="global.html#obtCasilleroEspecial">obtCasilleroEspecial</a></li><li><a href="global.html#obtDado">obtDado</a></li><li><a href="global.html#obtenerSumario">obtenerSumario</a></li><li><a href="global.html#obtNombrejugador">obtNombrejugador</a></li><li><a href="global.html#pasarTurno">pasarTurno</a></li><li><a href="global.html#responderSospecha">responderSospecha</a></li><li><a href="global.html#traerPartidas">traerPartidas</a></li><li><a href="global.html#unirJugador">unirJugador</a></li><li><a href="global.html#usarBrujaSalem">usarBrujaSalem</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.7</a> on Sun Nov 21 2021 18:18:38 GMT-0300 (hora estándar de Argentina)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

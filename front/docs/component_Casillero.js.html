@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: component/Casillero.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: component/Casillero.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import { useState } from "react";
+import Ficha from "./Ficha";
+import { obtNombrejugador, moverFicha } from "../services";
+
+/**
+ * Busca las posiciones donde están los jugadores que no están en recintos
+ * @param  {Array} jugadores
+ * @param  {int} x
+ * @param  {int} y
+ */
+function buscarJugadores(jugadores, x, y) {
+    let res = Array.from(jugadores);
+
+    res = res.filter(
+        (jugador) =>
+            jugador.posX === x &amp;&amp; jugador.posY === y &amp;&amp; jugador.recinto === ""
+    );
+
+    return res;
+}
+/**
+ * Calcula si la posiciones son posibles acceder con la ficha del jugador
+ * @param  {Array} posPosibles Posiciones que envía el back
+ * @param  {int} x Posición del tablero
+ * @param  {int} y Posición del tablero
+ */
+function esPosicionPosible(posPosibles, x, y) {
+    if (posPosibles.findIndex((e) => e.x === x &amp;&amp; e.y === y) !== -1) {
+        return true;
+    }
+    return false;
+}
+/**
+ * Obtiene el color de un jugador
+ * @param  {object} jugadores, Lista de jugadores
+ */
+function miColor(jugadores) {
+    return jugadores.find((e) => e.nombre === obtNombrejugador()).color;
+}
+
+/**
+ * Calcula el tamaño adecuado de la ficha en base a la cantidad de jugadores
+ * que hay en el casillero.
+ * @param {*} jugadores
+ * @param {*} x
+ * @param {*} y
+ * @returns {string}
+ */
+function getTamañoFicha(jugadores, x, y) {
+    let arreglo = buscarJugadores(jugadores, x, y);
+    if (arreglo.length > 4) {
+        return "12px";
+    } else if (arreglo.length > 1) {
+        return "18px";
+    } else {
+        return "30px";
+    }
+}
+
+/**
+ * Renderiza las fichas y las posibles elecciones de casillas para moverse.
+ * @param  {object} props Id partida y jugador. Posiciones en el tablero
+ */
+export default function Casillero(props) {
+    const [hovering, setHovering] = useState(false);
+
+    return (
+        &lt;div
+            className="casillero"
+            style={{
+                gridColumnStart: props.x + 1,
+                gridRowStart: props.y + 1,
+                backgroundColor: props.color || "black",
+            }}
+            onMouseOver={(e) => setHovering(true)}
+            onMouseOut={(e) => setHovering(false)}
+            data-testid="casillero"
+        >
+            {buscarJugadores(props.jugadores, props.x, props.y).map((e, i) => (
+                &lt;Ficha
+                    key={i}
+                    color={e.color}
+                    tamaño={getTamañoFicha(props.jugadores, props.x, props.y)}
+                />
+            ))}
+            {esPosicionPosible(props.posPosibles, props.x, props.y) ? (
+                &lt;div
+                    style={{
+                        opacity: hovering ? "50%" : "0%",
+                        cursor: hovering ? "pointer" : "",
+                        position: "absolute",
+                        zIndex: 1,
+                        width: "40px",
+                        height: "40px",
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+                    }}
+                    data-testid="posPosible"
+                    onClick={(e) => {
+                        props.setPosPosibles([]);
+                        moverFicha({
+                            id_partida: props.id_partida,
+                            id_jugador: props.id_jugador,
+                            x: props.x,
+                            y: props.y,
+                        });
+                    }}
+                >
+                    &lt;Ficha color={miColor(props.jugadores)} tamaño="30px" />
+                &lt;/div>
+            ) : null}
+            {props.extra ? props.extra() : null}
+        &lt;/div>
+    );
+}
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#asigNombrejugador">asigNombrejugador</a></li><li><a href="global.html#BotonAct">BotonAct</a></li><li><a href="global.html#BotonCrear">BotonCrear</a></li><li><a href="global.html#buscarJugadores">buscarJugadores</a></li><li><a href="global.html#buscarJugadoresRecinto">buscarJugadoresRecinto</a></li><li><a href="global.html#entrarRecinto">entrarRecinto</a></li><li><a href="global.html#enviarMensaje">enviarMensaje</a></li><li><a href="global.html#esCasillero">esCasillero</a></li><li><a href="global.html#esPosicionPosible">esPosicionPosible</a></li><li><a href="global.html#estaEnUnaEntrada">estaEnUnaEntrada</a></li><li><a href="global.html#getTama%25C3%25B1oFicha">getTamañoFicha</a></li><li><a href="global.html#hacerAcusacion">hacerAcusacion</a></li><li><a href="global.html#hacerSospecha">hacerSospecha</a></li><li><a href="global.html#iniciarPartida">iniciarPartida</a></li><li><a href="global.html#miColor">miColor</a></li><li><a href="global.html#moverFicha">moverFicha</a></li><li><a href="global.html#nuevaPartida">nuevaPartida</a></li><li><a href="global.html#nuevoJugador">nuevoJugador</a></li><li><a href="global.html#obtCasilleroEspecial">obtCasilleroEspecial</a></li><li><a href="global.html#obtDado">obtDado</a></li><li><a href="global.html#obtenerSumario">obtenerSumario</a></li><li><a href="global.html#obtNombrejugador">obtNombrejugador</a></li><li><a href="global.html#pasarTurno">pasarTurno</a></li><li><a href="global.html#responderSospecha">responderSospecha</a></li><li><a href="global.html#traerPartidas">traerPartidas</a></li><li><a href="global.html#unirJugador">unirJugador</a></li><li><a href="global.html#usarBrujaSalem">usarBrujaSalem</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.7</a> on Sun Nov 21 2021 18:18:38 GMT-0300 (hora estándar de Argentina)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

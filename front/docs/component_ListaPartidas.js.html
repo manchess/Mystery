@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: component/ListaPartidas.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: component/ListaPartidas.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import React, { useState, useEffect } from "react";
+import { useHistory } from "react-router";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faLock, faUserFriends } from "@fortawesome/free-solid-svg-icons";
+import { unirJugador, traerPartidas, obtNombrejugador } from "../services";
+import BotonCrear from "./BotonCrear";
+import BotonUnirse from "./BotonUnirse";
+import BotonAct from "./BotonAct";
+import PreUnirse from "./PreUnirse";
+
+/**
+ * Muestra una lista con las partidas aún no iniciadas.
+ * @returns Renderizado JSX
+ */
+export default function ListaPartidas() {
+    /**
+     * Ayuda a redireccionar al jugador a la partida.
+     */
+    const history = useHistory();
+    /**
+     * Estado que nos guarda las partidas no iniciadas obtenidas del back.
+     * @param  {list} [] Lista de partidas obtenidas del back
+     */
+    const [partidas, setPartidas] = useState([]);
+    /**
+     * Estado para guardar los datos antes de unirse a una partida.
+     * @param  {object} null
+     */
+    const [prePartida, setPrePartida] = useState(null);
+    /**
+     * Estado para guardar el color elegido.
+     * @param  {string} null
+     */
+    const [color, setColor] = useState(null);
+    /**
+     * Estado que guarda la contraseña ingresada.
+     * @param  {string} ""
+     */
+    const [password, setPassword] = useState("");
+
+    /**
+     * Obtiene las partidas desde el back.
+     */
+    function obtPartidas() {
+        traerPartidas()
+            .then((res) => {
+                console.log(res);
+                setPartidas(res.data);
+            })
+            .catch((err) => {
+                alert("No hay partidas. ¡Crea una nueva!");
+                console.log(err);
+            });
+    }
+
+    /**
+     * Redirecciona al jugador a la partida y envía al jugador al back.
+     * @param {Evento} e
+     */
+    function Unirsepartida(e) {
+        e.preventDefault();
+        unirJugador({
+            id_partida: prePartida.id_partida,
+            nombre: obtNombrejugador(),
+            color: color,
+            password: password,
+        })
+            .then((res) => {
+                console.log(res);
+                if (res.status === 200) {
+                    history.push({
+                        pathname: `/partidas/${res.data.id_partida}`,
+                        state: { ...res.data, nombre: prePartida.nombre },
+                    });
+                } else if (res.status === 202) {
+                    if (res.data.detail === "La partida ya fue iniciada") {
+                        alert("La partida ya fue iniciada");
+                        obtPartidas();
+                    } else if (res.data.detail === "La partida esta llena") {
+                        alert("La partida esta completa");
+                        obtPartidas();
+                    }
+                }
+            })
+            .catch((err) => {
+                if (err.response.status === 400) {
+                    alert("Contraseña incorrecta!");
+                } else if (err.response.status === 405) {
+                    alert("La partida no existe");
+                } else {
+                    alert("Ocurrió un error. Revise la consola.");
+                    console.error(err);
+                }
+            });
+    }
+    /**
+     * Renderiza la lista de partidas actualizada.
+     */
+    useEffect(() => {
+        obtPartidas();
+    }, []);
+
+    return (
+        &lt;div style={{ maxWidth: "750px", margin: "auto" }}>
+            &lt;h1 style={{ color: "white" }}>Unirse a una partida&lt;/h1>
+            &lt;div
+                style={{
+                    display: "flex",
+                    justifyContent: "center",
+                }}
+            >
+                {prePartida ? (
+                    &lt;PreUnirse
+                        partida={prePartida}
+                        Unirsepartida={Unirsepartida}
+                        setColor={setColor}
+                        setPrePartida={setPrePartida}
+                        color={color}
+                        setPassword={setPassword}
+                        password={password}
+                    />
+                ) : null}
+                &lt;table
+                    className="tablaPartidas"
+                    style={{ marginBottom: "10px" }}
+                >
+                    &lt;thead>
+                        &lt;tr>
+                            &lt;th width="40px">&lt;/th>
+                            &lt;th width="50%">Partida&lt;/th>
+                            &lt;th>Anfitrión&lt;/th>
+                            &lt;th width="140px">Cant. Jugadores&lt;/th>
+                        &lt;/tr>
+                    &lt;/thead>
+                    &lt;tbody>
+                        {partidas.map((e, key) => (
+                            &lt;tr key={key}>
+                                &lt;td>
+                                    {e.password ? (
+                                        &lt;FontAwesomeIcon icon={faLock} />
+                                    ) : null}
+                                &lt;/td>
+                                &lt;td>{e.nombre}&lt;/td>
+                                &lt;td>{e.anfitrion}&lt;/td>
+                                &lt;td>
+                                    &lt;FontAwesomeIcon icon={faUserFriends} />{" "}
+                                    {e.cantidad_jugadores}
+                                    /6
+                                &lt;/td>
+                                &lt;td>
+                                    &lt;BotonUnirse
+                                        partida={e}
+                                        unirse={setPrePartida}
+                                        setColor={setColor}
+                                        disabled={e.cantidad_jugadores === 6}
+                                    />
+                                &lt;/td>
+                            &lt;/tr>
+                        ))}
+                        {partidas.length === 0 ? (
+                            &lt;tr style={{ pointerEvents: "none" }}>
+                                &lt;td colSpan={4}>
+                                    &lt;i style={{ color: "gray" }}>
+                                        No hay partidas
+                                    &lt;/i>
+                                &lt;/td>
+                            &lt;/tr>
+                        ) : null}
+                    &lt;/tbody>
+                &lt;/table>
+            &lt;/div>
+            &lt;div style={{ display: "flex", columnGap: "10px" }}>
+                &lt;BotonAct actpartidas={obtPartidas} />
+                &lt;BotonCrear />
+            &lt;/div>
+        &lt;/div>
+    );
+}
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#asigNombrejugador">asigNombrejugador</a></li><li><a href="global.html#BotonAct">BotonAct</a></li><li><a href="global.html#BotonCrear">BotonCrear</a></li><li><a href="global.html#buscarJugadores">buscarJugadores</a></li><li><a href="global.html#buscarJugadoresRecinto">buscarJugadoresRecinto</a></li><li><a href="global.html#entrarRecinto">entrarRecinto</a></li><li><a href="global.html#enviarMensaje">enviarMensaje</a></li><li><a href="global.html#esCasillero">esCasillero</a></li><li><a href="global.html#esPosicionPosible">esPosicionPosible</a></li><li><a href="global.html#estaEnUnaEntrada">estaEnUnaEntrada</a></li><li><a href="global.html#getTama%25C3%25B1oFicha">getTamañoFicha</a></li><li><a href="global.html#hacerAcusacion">hacerAcusacion</a></li><li><a href="global.html#hacerSospecha">hacerSospecha</a></li><li><a href="global.html#iniciarPartida">iniciarPartida</a></li><li><a href="global.html#miColor">miColor</a></li><li><a href="global.html#moverFicha">moverFicha</a></li><li><a href="global.html#nuevaPartida">nuevaPartida</a></li><li><a href="global.html#nuevoJugador">nuevoJugador</a></li><li><a href="global.html#obtCasilleroEspecial">obtCasilleroEspecial</a></li><li><a href="global.html#obtDado">obtDado</a></li><li><a href="global.html#obtenerSumario">obtenerSumario</a></li><li><a href="global.html#obtNombrejugador">obtNombrejugador</a></li><li><a href="global.html#pasarTurno">pasarTurno</a></li><li><a href="global.html#responderSospecha">responderSospecha</a></li><li><a href="global.html#traerPartidas">traerPartidas</a></li><li><a href="global.html#unirJugador">unirJugador</a></li><li><a href="global.html#usarBrujaSalem">usarBrujaSalem</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.7</a> on Sun Nov 21 2021 18:18:38 GMT-0300 (hora estándar de Argentina)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

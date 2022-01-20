@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: component/Tablero.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: component/Tablero.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import {
+    faArrowDown,
+    faArrowLeft,
+    faArrowRight,
+    faArrowUp,
+    faSpider,
+} from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import Casillero from "./Casillero";
+import Recinto from "./Recinto";
+/**
+ * Calcula los casillero del tablero
+ * @param  {int} x Posición del tablero
+ * @param  {int} y Posición del tablero
+ */
+function esCasillero(x, y) {
+    return x === 6 || x === 13 || y === 6 || y === 13;
+}
+
+const recintos = [
+    {
+        nombre: "Cochera",
+        xInicio: 0,
+        yInicio: 0,
+        xFin: 7,
+        yFin: 7,
+        imagen: "cochera",
+    },
+    {
+        nombre: "Alcoba",
+        xInicio: 7,
+        yInicio: 0,
+        xFin: 13,
+        yFin: 13,
+        imagen: "alcoba",
+    },
+    {
+        nombre: "Biblioteca",
+        xInicio: 14,
+        yInicio: 0,
+        xFin: 19,
+        yFin: 13,
+        imagen: "biblioteca",
+    },
+    {
+        nombre: "Vestíbulo",
+        xInicio: 0,
+        yInicio: 7,
+        xFin: 7,
+        yFin: 13,
+        imagen: "vestibulo",
+    },
+    {
+        nombre: "Misterio",
+        xInicio: 7,
+        yInicio: 7,
+        xFin: 13,
+        yFin: 13,
+        imagen: "logomisterio",
+    },
+    {
+        nombre: "Panteón",
+        xInicio: 14,
+        yInicio: 7,
+        xFin: 19,
+        yFin: 13,
+        imagen: "panteon",
+    },
+    {
+        nombre: "Bodega",
+        xInicio: 0,
+        yInicio: 14,
+        xFin: 7,
+        yFin: 19,
+        imagen: "bodega",
+    },
+    {
+        nombre: "Salón",
+        xInicio: 7,
+        yInicio: 14,
+        xFin: 13,
+        yFin: 19,
+        imagen: "salon",
+    },
+    {
+        nombre: "Laboratorio",
+        xInicio: 14,
+        yInicio: 14,
+        xFin: 19,
+        yFin: 19,
+        imagen: "laboratorio",
+    },
+];
+
+const casillerosEspeciales = [
+    {
+        x: 0,
+        y: 6,
+        color: "white",
+    },
+    {
+        x: 0,
+        y: 13,
+        color: "white",
+    },
+    {
+        x: 6,
+        y: 0,
+        color: "white",
+    },
+    {
+        x: 6,
+        y: 19,
+        color: "white",
+    },
+    {
+        x: 13,
+        y: 0,
+        color: "white",
+    },
+    {
+        x: 13,
+        y: 19,
+        color: "white",
+    },
+    {
+        x: 19,
+        y: 6,
+        color: "white",
+    },
+    {
+        x: 19,
+        y: 13,
+        color: "white",
+    },
+    {
+        x: 4,
+        y: 6,
+        color: "#3F3C29",
+        extra: () => (
+            &lt;FontAwesomeIcon className="extraCasillero" icon={faArrowDown} />
+        ),
+    },
+    {
+        x: 3,
+        y: 13,
+        color: "#3F3C29",
+        extra: () => (
+            &lt;FontAwesomeIcon className="extraCasillero" icon={faArrowUp} />
+        ),
+    },
+    {
+        x: 6,
+        y: 10,
+        color: "#3F3C29",
+        extra: () => (
+            &lt;FontAwesomeIcon className="extraCasillero" icon={faArrowLeft} />
+        ),
+    },
+    {
+        x: 6,
+        y: 2,
+        color: "black",
+        extra: () => (
+            &lt;FontAwesomeIcon className="extraCasillero" icon={faArrowLeft} />
+        ),
+    },
+    {
+        x: 6,
+        y: 15,
+        color: "black",
+        extra: () => (
+            &lt;FontAwesomeIcon className="extraCasillero" icon={faArrowLeft} />
+        ),
+    },
+    {
+        x: 10,
+        y: 6,
+        color: "#943C29",
+        extra: () => (
+            &lt;FontAwesomeIcon className="extraCasillero" icon={faArrowUp} />
+        ),
+    },
+    {
+        x: 13,
+        y: 4,
+        color: "black",
+        extra: () => (
+            &lt;FontAwesomeIcon className="extraCasillero" icon={faArrowRight} />
+        ),
+    },
+    {
+        x: 13,
+        y: 10,
+        color: "#3F3C29",
+        extra: () => (
+            &lt;FontAwesomeIcon className="extraCasillero" icon={faArrowRight} />
+        ),
+    },
+    {
+        x: 13,
+        y: 16,
+        color: "black",
+        extra: () => (
+            &lt;FontAwesomeIcon className="extraCasillero" icon={faArrowRight} />
+        ),
+    },
+    {
+        x: 15,
+        y: 6,
+        color: "#3F3C29",
+        extra: () => (
+            &lt;FontAwesomeIcon className="extraCasillero" icon={faArrowDown} />
+        ),
+    },
+    {
+        x: 10,
+        y: 13,
+        color: "#943C29",
+        extra: () => (
+            &lt;FontAwesomeIcon className="extraCasillero" icon={faArrowDown} />
+        ),
+    },
+    {
+        x: 16,
+        y: 13,
+        color: "#3F3C29",
+        extra: () => (
+            &lt;FontAwesomeIcon className="extraCasillero" icon={faArrowUp} />
+        ),
+    },
+    {
+        x: 6,
+        y: 4,
+        color: "black",
+        extra: () => (
+            &lt;img
+                className="extraCasillero"
+                src="/tablero/murcielago.svg"
+                style={{ width: "30px" }}
+                alt="Murciélago"
+            />
+        ),
+    },
+    {
+        x: 6,
+        y: 14,
+        color: "black",
+        extra: () => (
+            &lt;img
+                className="extraCasillero"
+                src="/tablero/murcielago.svg"
+                style={{ width: "30px" }}
+                alt="Murciélago"
+            />
+        ),
+    },
+    {
+        x: 13,
+        y: 3,
+        color: "black",
+        extra: () => (
+            &lt;img
+                className="extraCasillero"
+                src="/tablero/escorpion.svg"
+                style={{ width: "30px" }}
+                alt="Escorpión"
+            />
+        ),
+    },
+    {
+        x: 13,
+        y: 14,
+        color: "black",
+        extra: () => (
+            &lt;img
+                className="extraCasillero"
+                src="/tablero/escorpion.svg"
+                style={{ width: "30px" }}
+                alt="Escorpión"
+            />
+        ),
+    },
+    {
+        x: 3,
+        y: 6,
+        color: "black",
+        extra: () => (
+            &lt;img
+                className="extraCasillero"
+                src="/tablero/cobra.svg"
+                style={{ width: "30px" }}
+                alt="Cobra"
+            />
+        ),
+    },
+    {
+        x: 14,
+        y: 6,
+        color: "black",
+        extra: () => (
+            &lt;img
+                className="extraCasillero"
+                src="/tablero/cobra.svg"
+                style={{ width: "30px" }}
+                alt="Cobra"
+            />
+        ),
+    },
+    {
+        x: 4,
+        y: 13,
+        color: "black",
+        extra: () => (
+            &lt;FontAwesomeIcon className="extraCasillero" icon={faSpider} />
+        ),
+    },
+    {
+        x: 15,
+        y: 13,
+        color: "black",
+        extra: () => (
+            &lt;FontAwesomeIcon className="extraCasillero" icon={faSpider} />
+        ),
+    },
+    {
+        x: 6,
+        y: 6,
+        color: "black",
+        extra: () => (
+            &lt;img
+                src="/tablero/trampa.svg"
+                alt="Trampa"
+                height="37px"
+                style={{ position: "absolute", transform: "rotate(0.5turn)" }}
+            />
+        ),
+    },
+    {
+        x: 13,
+        y: 6,
+        color: "black",
+        extra: () => (
+            &lt;img
+                src="/tablero/trampa.svg"
+                alt="Trampa"
+                height="37px"
+                style={{ position: "absolute", transform: "rotate(0.5turn)" }}
+            />
+        ),
+    },
+    {
+        x: 6,
+        y: 13,
+        color: "black",
+        extra: () => (
+            &lt;img
+                src="/tablero/trampa.svg"
+                alt="Trampa"
+                height="37px"
+                style={{ position: "absolute" }}
+            />
+        ),
+    },
+    {
+        x: 13,
+        y: 13,
+        color: "black",
+        extra: () => (
+            &lt;img
+                src="/tablero/trampa.svg"
+                alt="Trampa"
+                height="37px"
+                style={{ position: "absolute" }}
+            />
+        ),
+    },
+];
+
+/**
+ * Obtiene propiedades de casilleros especiales como color o símbolos extra.
+ * @param {int} x
+ * @param {int} y
+ * @returns {object}
+ */
+const obtCasilleroEspecial = (x, y) =>
+    casillerosEspeciales.find((e) => e.x === x &amp;&amp; e.y === y);
+
+/**
+ * Renderiza el tablero
+ * @param  {object} props ID partida y jugador
+ */
+export default function Tablero(props) {
+    return (
+        &lt;div className="tableroDiv">
+            &lt;div className="tablero">
+                {[...Array(20)].map((e, i) =>
+                    [...Array(20)].map((e, j) =>
+                        esCasillero(i, j) ? (
+                            &lt;Casillero
+                                key={j}
+                                x={i}
+                                y={j}
+                                jugadores={props.jugadores}
+                                posPosibles={props.posPosibles}
+                                id_partida={props.id_partida}
+                                id_jugador={props.id_jugador}
+                                setPosPosibles={props.setPosPosibles}
+                                color={
+                                    obtCasilleroEspecial(i, j)
+                                        ? obtCasilleroEspecial(i, j).color
+                                        : null
+                                }
+                                extra={
+                                    obtCasilleroEspecial(i, j)
+                                        ? obtCasilleroEspecial(i, j).extra
+                                        : null
+                                }
+                            />
+                        ) : null
+                    )
+                )}
+                {recintos.map((e, i) => (
+                    &lt;Recinto
+                        key={i}
+                        jugadores={props.jugadores}
+                        nombre={e.nombre}
+                        imagen={e.imagen}
+                        xInicio={e.xInicio}
+                        yInicio={e.yInicio}
+                        xFin={e.xFin}
+                        yFin={e.yFin}
+                    />
+                ))}
+            &lt;/div>
+        &lt;/div>
+    );
+}
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#asigNombrejugador">asigNombrejugador</a></li><li><a href="global.html#BotonAct">BotonAct</a></li><li><a href="global.html#BotonCrear">BotonCrear</a></li><li><a href="global.html#buscarJugadores">buscarJugadores</a></li><li><a href="global.html#buscarJugadoresRecinto">buscarJugadoresRecinto</a></li><li><a href="global.html#entrarRecinto">entrarRecinto</a></li><li><a href="global.html#enviarMensaje">enviarMensaje</a></li><li><a href="global.html#esCasillero">esCasillero</a></li><li><a href="global.html#esPosicionPosible">esPosicionPosible</a></li><li><a href="global.html#estaEnUnaEntrada">estaEnUnaEntrada</a></li><li><a href="global.html#getTama%25C3%25B1oFicha">getTamañoFicha</a></li><li><a href="global.html#hacerAcusacion">hacerAcusacion</a></li><li><a href="global.html#hacerSospecha">hacerSospecha</a></li><li><a href="global.html#iniciarPartida">iniciarPartida</a></li><li><a href="global.html#miColor">miColor</a></li><li><a href="global.html#moverFicha">moverFicha</a></li><li><a href="global.html#nuevaPartida">nuevaPartida</a></li><li><a href="global.html#nuevoJugador">nuevoJugador</a></li><li><a href="global.html#obtCasilleroEspecial">obtCasilleroEspecial</a></li><li><a href="global.html#obtDado">obtDado</a></li><li><a href="global.html#obtenerSumario">obtenerSumario</a></li><li><a href="global.html#obtNombrejugador">obtNombrejugador</a></li><li><a href="global.html#pasarTurno">pasarTurno</a></li><li><a href="global.html#responderSospecha">responderSospecha</a></li><li><a href="global.html#traerPartidas">traerPartidas</a></li><li><a href="global.html#unirJugador">unirJugador</a></li><li><a href="global.html#usarBrujaSalem">usarBrujaSalem</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.7</a> on Sun Nov 21 2021 18:18:38 GMT-0300 (hora estándar de Argentina)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
