@@ -1,0 +1,12 @@
+{
+    "source": {
+        "include": ["./src/component", "./src/routers","./src/services"],
+        "includePattern": ".+\\.js(doc|x)?$",
+        "exclude": "node_modules/|docs"
+    },
+    "plugins": [],
+    "opts": {
+        "destination": "docs/"
+    }, 
+    "recurseDepth": 10
+}
